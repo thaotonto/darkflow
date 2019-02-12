@@ -1,0 +1,22 @@
+<annotation>
+  <folder>images</folder>
+  <filename>000171.jpg</filename>
+  <segmented>0</segmented>
+  <size>
+    <width>600</width>
+    <height>450</height>
+    <depth>3</depth>
+  </size>
+  <object>
+    <name>license_plate</name>
+    <pose>Unspecified</pose>
+    <truncated>0</truncated>
+    <difficult>0</difficult>
+    <bndbox>
+      <xmin>179</xmin>
+      <ymin>170</ymin>
+      <xmax>341</xmax>
+      <ymax>285</ymax>
+    </bndbox>
+  </object>
+</annotation>
