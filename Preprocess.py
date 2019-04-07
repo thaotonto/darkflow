@@ -1,69 +1,39 @@
-# Preprocess.py
-
 import cv2
-import numpy as np
-import math
 
-# module level variables ##########################################################################
-GAUSSIAN_SMOOTH_FILTER_SIZE = (5, 5)
-ADAPTIVE_THRESH_BLOCK_SIZE = 19
-ADAPTIVE_THRESH_WEIGHT = 9
+# define constant
+BLOCK_SIZE = 19
+WEIGHTED_MEAN = 9
 
-###################################################################################################
-def preprocess(imgOriginal):
-    imgGrayscale = extractValue(imgOriginal)
 
-    imgMaxContrastGrayscale = maximizeContrast(imgGrayscale)
+def preprocess(image):
+    '''
+        this function return a gray scale image and
+        threshold image after increase accuracy by increase contrast
+        and reduce noise by blur
+    '''
 
-    height, width = imgGrayscale.shape
+    imgGrayscale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    imgHighContrast = increase_contrast(imgGrayscale)
 
-    imgBlurred = np.zeros((height, width, 1), np.uint8)
+    blur = cv2.GaussianBlur(imgHighContrast, (5, 5), 0)
 
-    imgBlurred = cv2.GaussianBlur(imgMaxContrastGrayscale, GAUSSIAN_SMOOTH_FILTER_SIZE, 0)
+    imgThreshold = cv2.adaptiveThreshold(
+        blur, 255.0, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+        cv2.THRESH_BINARY_INV, BLOCK_SIZE, WEIGHTED_MEAN
+    )
 
-    imgThresh = cv2.adaptiveThreshold(imgBlurred, 255.0, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, ADAPTIVE_THRESH_BLOCK_SIZE, ADAPTIVE_THRESH_WEIGHT)
-
-    return imgGrayscale, imgThresh
+    return imgGrayscale, imgThreshold
 # end function
 
-###################################################################################################
-def extractValue(imgOriginal):
-    height, width, numChannels = imgOriginal.shape
 
-    imgHSV = np.zeros((height, width, 3), np.uint8)
-
-    imgHSV = cv2.cvtColor(imgOriginal, cv2.COLOR_BGR2HSV)
-
-    imgHue, imgSaturation, imgValue = cv2.split(imgHSV)
-
-    return imgValue
-# end function
-
-###################################################################################################
-def maximizeContrast(imgGrayscale):
-
-    height, width = imgGrayscale.shape
-
-    imgTopHat = np.zeros((height, width, 1), np.uint8)
-    imgBlackHat = np.zeros((height, width, 1), np.uint8)
-
+def increase_contrast(image):
     structuringElement = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
 
-    imgTopHat = cv2.morphologyEx(imgGrayscale, cv2.MORPH_TOPHAT, structuringElement)
-    imgBlackHat = cv2.morphologyEx(imgGrayscale, cv2.MORPH_BLACKHAT, structuringElement)
+    tophat = cv2.morphologyEx(image, cv2.MORPH_TOPHAT, structuringElement)
+    blackhat = cv2.morphologyEx(image, cv2.MORPH_BLACKHAT, structuringElement)
 
-    imgGrayscalePlusTopHat = cv2.add(imgGrayscale, imgTopHat)
-    imgGrayscalePlusTopHatMinusBlackHat = cv2.subtract(imgGrayscalePlusTopHat, imgBlackHat)
+    imgPlusTopHat = cv2.add(image, tophat)
+    imgPlusTopHatMinusBlackHat = cv2.subtract(imgPlusTopHat, blackhat)
 
-    return imgGrayscalePlusTopHatMinusBlackHat
+    return imgPlusTopHatMinusBlackHat
 # end function
-
-
-
-
-
-
-
-
-
-
