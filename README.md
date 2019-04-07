@@ -1,6 +1,6 @@
 # Automatic Vietnamese bike's plate license recognition system
 
-![](preview.png)
+![preview](preview.png)
 ## installation
 install `Anaconda` **[here](https://www.anaconda.com/distribution/)**
 
@@ -10,7 +10,7 @@ conda create -n darkflow pip python=3.6
 ```
 Then, activate the environment by issuing:
 ```
-activate tensorflow
+activate darkflow
 ```
 Install tensorflow-cpu in this environment by issuing:
 ```

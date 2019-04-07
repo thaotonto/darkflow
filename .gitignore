@@ -46,3 +46,4 @@ ckpt/*
 .cache/
 plate_image/
 output/
+train/
