@@ -21,8 +21,8 @@ BASE_URL = "http://5f7fe4bb.ngrok.io"
 URL_CHECK_IN = BASE_URL + "/api/records/check-in"
 URL_CHECK_OUT = BASE_URL + "/api/records/check-out"
 URL_IMAGE = BASE_URL + "/api/photos/raw/%s"
-CONFIDENCE_RATE = 0.99
-LICENSE_PLATE_COUNT = 10
+CONFIDENCE_RATE = 0.3
+LICENSE_PLATE_COUNT = 3
 
 # define global varialbles
 processing = False
@@ -68,7 +68,7 @@ def process_image(img_plate):
     if re.match(r'\d{2}[A-Z]\d\d{5}', license_plate_number) or re.match(r'\d{2}[A-Z]\d\d{4}', license_plate_number):
         if license_plate_number == last_sent_plate:
             return False
-        else :
+        else:
             return license_plate_number, img_plate
     else:
         return False
@@ -89,6 +89,7 @@ def mycallback(result):
 
     processing = False
 # end function
+
 
 # check if plate number read from plate is constant
 def addPossiblePlate(license_plate_number):
@@ -119,7 +120,7 @@ if __name__ == "__main__":
         print("\nerror: Traning was not successful\n")
     # end if
 
-    pool=Pool()
+    pool = Pool()
 
     capture = cv2.VideoCapture(args["video"])                           # load video
     camera = cv2.VideoCapture(0)                                        # load camera
@@ -127,7 +128,7 @@ if __name__ == "__main__":
     colors = [tuple(255 * np.random.rand(3)) for i in range(5)]
 
     cv2.namedWindow('Plate Image')
-    cv2.moveWindow('Plate Image', 20,20);
+    cv2.moveWindow('Plate Image', 20, 20)
     cv2.namedWindow("cam")
     cv2.moveWindow("cam", 20, 500)
 
